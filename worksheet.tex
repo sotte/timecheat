@@ -1,0 +1,17 @@
+jdocumentclass{article}
+\title{Arbeitszeiterfassung}
+\author{max Mustermann}
+\date{#MONTH#}
+\begin{document}
+\maketitle
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  Tag & Arbeitsbegin & Arbeitsende & Beginn Pause & Ende Pause\\
+  #TIMETABLE#
+  \hline
+\end{tabular}
+\vspace{3cm}
+\hfill\makebox[2.5in]{\hrulefill}\\
+\vspace{-4mm}
+\hspace{5.5cm} Datum, Unterschrift
+\end{document}
