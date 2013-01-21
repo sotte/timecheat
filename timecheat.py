@@ -125,5 +125,3 @@ def main():
     print_sheet(printer, workdays, args)
 
 
-if __name__ == "__main__":
-    main()
