@@ -56,14 +56,18 @@ def get_work_days(year, month, holiday_file):
     holidays = get_holidays(holiday_file)
     for day in cal.itermonthdates(year, month):
         if (day.weekday() not in [calendar.SATURDAY, calendar.SUNDAY] and
-                day not in holidays):
+                day not in holidays and
+                day.month == month):
             workdays.append(day)
     return workdays
 
 
 def print_sheet(printer, workdays, args):
     printer.print_header()
-    week = 0
+    printer.print_divider()
+    (_, week, _) = workdays[0].isocalendar()
+    day_num_week = 0
+    day_num_month = 0
     for day in workdays:
         (s, e, ps, pe) = create_times(day, args.start[0], args.pausestart[0],
                                       args.worktime[0], args.pausetime[0],
@@ -71,8 +75,18 @@ def print_sheet(printer, workdays, args):
         (_, weeknumber, _) = day.isocalendar()
         if weeknumber != week:
             printer.print_divider()
+            printer.print_week(week, day_num_week, args.worktime[0])
+            printer.print_divider()
+            day_num_week = 0
             week = weeknumber
-        printer.print_day(s, e, ps, pe)
+        day_num_week = day_num_week + 1
+        day_num_month = day_num_month + 1
+        printer.print_day(s, e, ps, pe, timedelta(hours=args.worktime[0]))
+    if (day_num_week != 0) :
+        printer.print_divider()
+        printer.print_week(week, day_num_week, args.worktime[0])
+        printer.print_divider()
+    printer.print_month("Januar", day_num_month, args.worktime[0])
     printer.print_footer()
 
 
@@ -98,6 +112,9 @@ def main():
     parser.add_argument('--variance', nargs=1, metavar='var', default=[.25],
                         type=float, help='The variance of each start ' +
                         'time. Default: 15 min (=.25).')
+    parser.add_argument('--month', nargs=2, metavar='d', default=[get_month()],
+                        type=int, help='The month for which the timesheet' +
+                        ' should be printed. Default: Current month')
     parser.add_argument('--output', nargs=1, metavar='format',
                         default=['text'], type=str, help='The output format.' +
                         ' May be \'text\', \'template\'  or \'latex\'. ' +
@@ -110,7 +127,8 @@ def main():
                         'holiday dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
     args = parser.parse_args()
-    (year, month) = get_month()
+
+    (year, month) = args.month[0]
     workdays = get_work_days(year, month, args.holidays[0])
 
     if args.output[0] == 'text':
@@ -125,3 +143,5 @@ def main():
     print_sheet(printer, workdays, args)
 
 
+if __name__ == "__main__":
+    main()

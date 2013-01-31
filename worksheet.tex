@@ -1,17 +1,22 @@
-jdocumentclass{article}
+\documentclass{article}
+\usepackage{a4wide}
 \title{Arbeitszeiterfassung}
-\author{max Mustermann}
+\author{Max Mustermann}
 \date{#MONTH#}
 \begin{document}
 \maketitle
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
   \hline
-  Tag & Arbeitsbegin & Arbeitsende & Beginn Pause & Ende Pause\\
+  Tag & Arbeitsbegin & Arbeitsende & Beginn Pause & Ende Pause & Arbeitszeit\\
   #TIMETABLE#
   \hline
 \end{tabular}
 \vspace{3cm}
 \hfill\makebox[2.5in]{\hrulefill}\\
 \vspace{-4mm}
-\hspace{5.5cm} Datum, Unterschrift
+\hspace{8cm} Datum, Unterschrift Arbeitnehmer
+\vspace{2cm}
+\hfill\makebox[2.5in]{\hrulefill}\\
+\vspace{-4mm}
+\hspace{8cm} Datum, Unterschrift Abteilungsleiter
 \end{document}

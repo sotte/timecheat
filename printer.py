@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import re
 
 
@@ -9,11 +9,23 @@ class LatexPrinter:
         else:
             self.template = None
 
-    def print_day(self, start, end, pausestart, pauseend):
+    def print_day(self, start, end, pausestart, pauseend, worktime):
         print(start.strftime('%a, %d.%m.%Y & %H:%M & ') +
               end.strftime('%H:%M & ') +
               pausestart.strftime('%H:%M & ') +
-              pauseend.strftime('%H:%M\\\\'))
+              pauseend.strftime('%H:%M & ') +
+              str(worktime.seconds/3600) + ":" + 
+              str(worktime.seconds/60%60).zfill(2) + '\\\\')
+
+    def print_week(self, weeknum, ndays, hours_per_day):
+        time = timedelta(hours = ndays*hours_per_day)
+        print('Summe KW ' + str(weeknum) + ' &&&&& ' + 
+              str(time.seconds/3600 + time.days*24) + ":" + 
+              str(time.seconds/60%60).zfill(2) + '\\\\')
+
+    def print_month(self, name, ndays, hours_per_day):
+        time = ndays*hours_per_day
+        print('Summe ' + str(name) + ' &&&&& ' + str(time) + '\\\\')
 
     def print_divider(self):
         print('\\hline')
@@ -42,10 +54,18 @@ class TextPrinter:
     def __init__(self):
         pass
 
-    def print_day(self, start, end, pausestart, pauseend):
+    def print_day(self, start, end, pausestart, pauseend, worktime):
         print(start.strftime('%a, %d.%m.%Y | %H:%M | ') +
               end.strftime('%H:%M | ') + pausestart.strftime('%H:%M | ') +
               pauseend.strftime('%H:%M'))
+
+    def print_week(self, weeknum, ndays, hours_per_day):
+        time = ndays*hours_per_day
+        print('week ' + str(weeknum) + ': ' + str(time))
+
+    def print_month(self, name, ndays, hours_per_day):
+        time = ndays*hours_per_day
+        print('sum ' + str(name) + ': ' + str(time))
 
     def print_divider(self):
         print('----------------+-------+-------+-------+-------')
