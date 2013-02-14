@@ -66,7 +66,7 @@ def get_work_days(year, month, holiday_file):
 
 
 def print_sheet(printer, workdays, args):
-    printer.print_header()
+    printer.print_header(args.month)
     printer.print_divider()
     (_, week, _) = workdays[0].isocalendar()
     day_num_week = 0
