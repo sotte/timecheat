@@ -38,9 +38,12 @@ def round_to_quarter(time):
     return time
 
 
+def get_year():
+    return date.today().year
+
+
 def get_month():
-    today = date.today()
-    return (today.year, today.month)
+    return date.today().month
 
 
 def get_holidays(filename):
@@ -65,7 +68,7 @@ def get_work_days(year, month, holiday_file):
 
 
 def print_sheet(printer, workdays, args):
-    printer.print_header()
+    printer.print_header(args.month)
     printer.print_divider()
     (_, week, _) = workdays[0].isocalendar()
     day_num_week = 0
@@ -94,8 +97,8 @@ def print_sheet(printer, workdays, args):
 
 def main():
     try:
-        locale.setlocale(locale.LC_TIME, environ['LOCALE']) 
-    except KeyError: # no locale set
+        locale.setlocale(locale.LC_TIME, environ['LOCALE'])
+    except KeyError:  # no locale set
         pass
     parser = argparse.ArgumentParser(description='Create a timesheet with ' +
                                      'gaussian distributed times for work.')
@@ -114,8 +117,12 @@ def main():
     parser.add_argument('--variance', nargs=1, metavar='var', default=[.25],
                         type=float, help='The variance of each start ' +
                         'time. Default: 15 min (=.25).')
-    parser.add_argument('--month', nargs=2, metavar='d', default=[get_month()],
-                        type=int, help='The month for which the timesheet' +
+    parser.add_argument('--year', metavar='year', default=get_year(), type=int,
+                        help='The year for which the timesheet'
+                        ' should be printed. Default: Current year')
+    parser.add_argument('--month', metavar='month', default=get_month(),
+                        type=int,
+                        help='The month for which the timesheet'
                         ' should be printed. Default: Current month')
     parser.add_argument('--output', nargs=1, metavar='format',
                         default=['text'], type=str, help='The output format.' +
@@ -130,8 +137,7 @@ def main():
                         ' german order, e.g.: 24.03.2013')
     args = parser.parse_args()
 
-    (year, month) = args.month[0]
-    workdays = get_work_days(year, month, args.holidays[0])
+    workdays = get_work_days(args.year, args.month, args.holidays[0])
 
     if args.output[0] == 'text':
         printer = TextPrinter()
