@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+import calendar
 import re
 
 
@@ -14,13 +15,13 @@ class LatexPrinter:
               end.strftime('%H:%M & ') +
               pausestart.strftime('%H:%M & ') +
               pauseend.strftime('%H:%M & ') +
-              str(worktime.seconds/3600) + ":" + 
+              str(worktime.seconds/3600) + ":" +
               str(worktime.seconds/60%60).zfill(2) + '\\\\')
 
     def print_week(self, weeknum, ndays, hours_per_day):
         time = timedelta(hours = ndays*hours_per_day)
-        print('Summe KW ' + str(weeknum) + ' &&&&& ' + 
-              str(time.seconds/3600 + time.days*24) + ":" + 
+        print('Summe KW ' + str(weeknum) + ' &&&&& ' +
+              str(time.seconds/3600 + time.days*24) + ":" +
               str(time.seconds/60%60).zfill(2) + '\\\\')
 
     def print_month(self, name, ndays, hours_per_day):
@@ -30,12 +31,12 @@ class LatexPrinter:
     def print_divider(self):
         print('\\hline')
 
-    def print_header(self):
+    def print_header(self, month):
         if self.template:
             for l in self.template:
                 if re.search('#TIMETABLE#', l):
                     break
-                l = re.sub('#MONTH#', date.today().strftime('%B, %Y'), l)
+                l = re.sub('#MONTH#', calendar.month_name[month], l)
                 print(l)
         else:
             print(' day & start & end & from & till\\\\')
@@ -70,12 +71,12 @@ class TextPrinter:
     def print_divider(self):
         print('----------------+-------+-------+-------+-------')
 
-    def print_header(self):
+    def print_header(self, month):
         print('')
         print(' Worksheet ')
         print('"""""""""""')
         print('')
-        print('Month: ' + date.today().strftime('%B, %Y'))
+        print('Month: ' + calendar.month_name[month])
         print('')
         print('                                      pause')
         print(' day            | start |  end  | from  | till')
