@@ -84,7 +84,7 @@ def print_sheet(printer, workdays, args):
         day_num_week = day_num_week + 1
         day_num_month = day_num_month + 1
         printer.print_day(s, e, ps, pe, timedelta(hours=args.worktime[0]))
-    if (day_num_week != 0) :
+    if (day_num_week != 0):
         printer.print_divider()
         printer.print_week(week, day_num_week, args.worktime[0])
         printer.print_divider()
