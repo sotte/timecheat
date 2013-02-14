@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 import argparse
 from random import gauss
-from math import sqrt
+from math import sqrt, modf
 from datetime import date, datetime, time, timedelta
 import calendar
 from string import strip
@@ -11,11 +11,13 @@ from os import environ
 
 
 def create_times(day, start, pausestart, worktime, pausetime, variance):
-    start = round_to_quarter(datetime.combine(day, time(start)) +
+    mins_hours = modf(start)
+    start = round_to_quarter(datetime.combine(day, time(int(mins_hours[1]),int(60*mins_hours[0]))) +
                              timedelta(hours=gauss(0, sqrt(variance))))
     pausetime = timedelta(hours=pausetime)
     worktime = timedelta(hours=worktime)
-    pausestart = round_to_quarter(datetime.combine(day, time(pausestart)) +
+    pause_mins_hours = modf(pausestart)
+    pausestart = round_to_quarter(datetime.combine(day, time(int(pause_mins_hours[1]),int(60*mins_hours[0]))) +
                                   timedelta(hours=gauss(0, sqrt(variance))))
     pauseend = pausestart + pausetime
     end = start + pausetime + worktime
@@ -101,10 +103,10 @@ def main():
     parser = argparse.ArgumentParser(description='Create a timesheet with ' +
                                      'gaussian distributed times for work.')
     parser.add_argument('--start', nargs=1, metavar='t_s', default=[8],
-                        type=int, help='The time when work normally' +
+                        type=float, help='The time when work normally' +
                         ' starts. Default: 08:00 (=8).')
     parser.add_argument('--pausestart', nargs=1,  metavar='t_p',
-                        default=[13], type=int, help='Time when the ' +
+                        default=[13], type=float, help='Time when the ' +
                         'lunch break normally starts. Default 13:00 (=13).')
     parser.add_argument('--worktime', nargs=1, metavar='t_d',  default=[8],
                         type=float, help='The duration of every work ' +
