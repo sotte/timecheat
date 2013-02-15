@@ -1,3 +1,5 @@
 # GIT ignore file
 
-*.pyc   # ignore all compiled python files
+# ignore all compiled python files
+*.pyc
+
