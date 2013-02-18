@@ -32,9 +32,12 @@ def round_to_quarter(time):
     else:
         minutes = minutes_ten
 
+    hours = time.hour
     if minutes == 60:
         minutes = 0
-    time = time.replace(minute=minutes)
+        hours += 1
+    time = time.replace(hour=hours,minute=minutes)
+
     return time
 
 
