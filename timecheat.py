@@ -94,7 +94,9 @@ def print_sheet(printer, workdays, args):
         printer.print_divider()
         printer.print_week(week, day_num_week, args.worktime[0])
         printer.print_divider()
-    printer.print_month("Januar", day_num_month, args.worktime[0])
+    printer.print_month(calendar.month_name[args.month],
+                        day_num_month,
+                        args.worktime[0])
     printer.print_footer()
 
 
