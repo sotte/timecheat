@@ -7,7 +7,7 @@ Put each holiday in a holiday file (each line a date in german format, e.g.
 23.12.2013).
 
 With --output you can specify different output formats. There is 'latex', 'text'
-and 'template'. If you use a template the tag #MONTH# is replaced my the current
+and 'template'. If you use a template the tag #MONTH# is replaced by the current
 month, #TIMETABLE# is replaced by a 5 column latex table (without \begin and
 \end etc.) holding the actual time data.
 
