@@ -11,10 +11,14 @@ class LatexPrinter:
             self.template = None
 
     def print_day(self, start, end, pausestart, pauseend, worktime):
+	if pauseend - pausestart:
+		pausestr = pausestart.strftime('%H:%M & ') + \
+					pauseend.strftime('%H:%M & ')
+	else:
+		pausestr = '--:-- & --:-- &'
         print(start.strftime('%a, %d.%m.%Y & %H:%M & ') +
               end.strftime('%H:%M & ') +
-              pausestart.strftime('%H:%M & ') +
-              pauseend.strftime('%H:%M & ') +
+              pausestr +
               str(worktime.seconds/3600) + ":" +
               str(worktime.seconds/60%60).zfill(2) + '\\\\')
 
@@ -56,9 +60,13 @@ class TextPrinter:
         pass
 
     def print_day(self, start, end, pausestart, pauseend, worktime):
+	if pauseend - pausestart:
+		pausestr = pausestart.strftime('%H:%M | ') + \
+					pauseend.strftime('%H:%M')
+	else:
+		pausestr = '--:-- | --:--'
         print(start.strftime('%a, %d.%m.%Y | %H:%M | ') +
-              end.strftime('%H:%M | ') + pausestart.strftime('%H:%M | ') +
-              pauseend.strftime('%H:%M'))
+              end.strftime('%H:%M | ') + pausestr)
 
     def print_week(self, weeknum, ndays, hours_per_day):
         time = ndays*hours_per_day
