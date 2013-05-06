@@ -58,13 +58,30 @@ def get_holidays(filename):
     return holidays
 
 
-def get_work_days(year, month, holiday_file):
+def get_unholidays(filename):
+    try:
+        unholiday_file = file(filename)
+    except IOError:
+        print "Unholiday file does not exist:", filename, "."
+        print "Continuing without."
+        return []
+
+    unholidays = []
+    for h in unholiday_file.readlines():
+        h = strip(h, '\n')
+        unholidays.append(datetime.strptime(h, '%d.%m.%Y').date())
+    return unholidays
+
+
+def get_work_days(year, month, holiday_file, unholiday_file):
     cal = calendar.Calendar()
     workdays = []
     holidays = get_holidays(holiday_file)
+    unholidays = get_unholidays(unholiday_file)
     for day in cal.itermonthdates(year, month):
-        if (day.weekday() not in [calendar.SATURDAY, calendar.SUNDAY] and
-                day not in holidays and
+        if (((day.weekday() not in [calendar.SATURDAY, calendar.SUNDAY] and
+                day not in holidays) or
+                (day in unholidays)) and
                 day.month == month):
             workdays.append(day)
     return workdays
@@ -139,9 +156,14 @@ def main():
                         default=['holidays'], type=str, help='A file ' +
                         'holiday dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
+    parser.add_argument('--unholidays', nargs=1, metavar='file',
+                        default=['unholidays'], type=str, help='A file ' +
+                        'working dates. Format is each day in a line in ' +
+                        ' german order, e.g.: 24.03.2013')
     args = parser.parse_args()
 
-    workdays = get_work_days(args.year, args.month, args.holidays[0])
+    workdays = get_work_days(args.year, args.month, args.holidays[0],
+                            args.unholidays[0])
 
     if args.output[0] == 'text':
         printer = TextPrinter()
