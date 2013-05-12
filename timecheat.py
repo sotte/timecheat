@@ -49,35 +49,33 @@ def get_month():
     return date.today().month
 
 
-def get_holidays(filename):
-    holiday_file = file(filename)
+def get_holidays(filenames):
     holidays = []
-    for h in holiday_file.readlines():
-        h = strip(h, '\n')
-        holidays.append(datetime.strptime(h, '%d.%m.%Y').date())
+    if filenames:
+        for f in filenames:
+            holiday_file = file(f)
+            for h in holiday_file.readlines():
+                h = strip(h, '\n')
+                holidays.append(datetime.strptime(h, '%d.%m.%Y').date())
     return holidays
 
 
-def get_unholidays(filename):
-    try:
-        unholiday_file = file(filename)
-    except IOError:
-        print "Unholiday file does not exist:", filename, "."
-        print "Continuing without."
-        return []
-
+def get_unholidays(filenames):
     unholidays = []
-    for h in unholiday_file.readlines():
-        h = strip(h, '\n')
-        unholidays.append(datetime.strptime(h, '%d.%m.%Y').date())
+    if filenames:
+        for f in filenames:
+            unholiday_file = file(f)
+            for h in unholiday_file.readlines():
+                h = strip(h, '\n')
+                unholidays.append(datetime.strptime(h, '%d.%m.%Y').date())
     return unholidays
 
 
-def get_work_days(year, month, holiday_file, unholiday_file):
+def get_work_days(year, month, holiday_files, unholiday_files):
     cal = calendar.Calendar()
     workdays = []
-    holidays = get_holidays(holiday_file)
-    unholidays = get_unholidays(unholiday_file)
+    holidays = get_holidays(holiday_files)
+    unholidays = get_unholidays(unholiday_files)
     for day in cal.itermonthdates(year, month):
         if (((day.weekday() not in [calendar.SATURDAY, calendar.SUNDAY] and
                 day not in holidays) or
@@ -152,18 +150,18 @@ def main():
     parser.add_argument('--template', nargs=1, metavar='file',
                         default=['worksheet.tex'], type=str, help='If output' +
                         ' is \'template\' you can specify a template file.')
-    parser.add_argument('--holidays', nargs=1, metavar='file',
+    parser.add_argument('--holidays', nargs='*', metavar='file',
                         default=['holidays'], type=str, help='A file ' +
                         'holiday dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
-    parser.add_argument('--unholidays', nargs=1, metavar='file',
-                        default=['unholidays'], type=str, help='A file ' +
+    parser.add_argument('--unholidays', nargs='*', metavar='file',
+                        type=str, help='A file ' +
                         'working dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
     args = parser.parse_args()
 
-    workdays = get_work_days(args.year, args.month, args.holidays[0],
-                            args.unholidays[0])
+    workdays = get_work_days(args.year, args.month, args.holidays,
+                            args.unholidays)
 
     if args.output[0] == 'text':
         printer = TextPrinter()
