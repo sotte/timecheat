@@ -3,3 +3,6 @@
 # ignore all compiled python files
 *.pyc
 
+# ignore the unholiday file
+unholidays
+
