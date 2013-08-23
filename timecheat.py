@@ -144,9 +144,9 @@ def main():
                         help='The month for which the timesheet'
                         ' should be printed. Default: Current month')
     parser.add_argument('--output', nargs=1, metavar='format',
-                        default=['text'], type=str, help='The output format.' +
+                        default=['template'], type=str, help='The output format.' +
                         ' May be \'text\', \'template\'  or \'latex\'. ' +
-                        'Default: text')
+                        'Default: template')
     parser.add_argument('--template', nargs=1, metavar='file',
                         default=['worksheet.tex'], type=str, help='If output' +
                         ' is \'template\' you can specify a template file.')
