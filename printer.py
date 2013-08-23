@@ -1,4 +1,4 @@
-from datetime import datetime, date, timedelta
+from datetime import timedelta
 import calendar
 import re
 
@@ -11,22 +11,23 @@ class LatexPrinter:
             self.template = None
 
     def print_day(self, start, end, pausestart, pauseend, worktime):
-	if pauseend - pausestart:
-		pausestr = pausestart.strftime('%H:%M & ') + \
-					pauseend.strftime('%H:%M & ')
-	else:
-		pausestr = '--:-- & --:-- &'
+        if pauseend - pausestart:
+            pausestr = (pausestart.strftime('%H:%M & ') +
+                        pauseend.strftime('%H:%M & '))
+        else:
+            pausestr = '--:-- & --:-- &'
+
         print(start.strftime('%a, %d.%m.%Y & %H:%M & ') +
               end.strftime('%H:%M & ') +
               pausestr +
               str(worktime.seconds/3600) + ":" +
-              str(worktime.seconds/60%60).zfill(2) + '\\\\')
+              str(worktime.seconds/60 % 60).zfill(2) + '\\\\')
 
     def print_week(self, weeknum, ndays, hours_per_day):
-        time = timedelta(hours = ndays*hours_per_day)
+        time = timedelta(hours=ndays*hours_per_day)
         print('Summe KW ' + str(weeknum) + ' &&&&& ' +
               str(time.seconds/3600 + time.days*24) + ":" +
-              str(time.seconds/60%60).zfill(2) + '\\\\')
+              str(time.seconds/60 % 60).zfill(2) + '\\\\')
 
     def print_month(self, name, ndays, hours_per_day):
         time = ndays*hours_per_day
@@ -60,11 +61,11 @@ class TextPrinter:
         pass
 
     def print_day(self, start, end, pausestart, pauseend, worktime):
-	if pauseend - pausestart:
-		pausestr = pausestart.strftime('%H:%M | ') + \
-					pauseend.strftime('%H:%M')
-	else:
-		pausestr = '--:-- | --:--'
+        if pauseend - pausestart:
+            pausestr = (pausestart.strftime('%H:%M | ') +
+                        pauseend.strftime('%H:%M'))
+        else:
+            pausestr = '--:-- | --:--'
         print(start.strftime('%a, %d.%m.%Y | %H:%M | ') +
               end.strftime('%H:%M | ') + pausestr)
 
