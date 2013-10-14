@@ -49,6 +49,15 @@ def get_month():
     return date.today().month
 
 
+def get_prev_year_month():
+    today = date.today()
+    # first day of the current month
+    first = date(day=1, month=today.month, year=today.year)
+    # the previous month
+    previous = first - timedelta(days=1)
+    return previous.year,  previous.month
+
+
 def get_holidays(filenames):
     holidays = []
     if filenames:
@@ -119,6 +128,9 @@ def main():
         locale.setlocale(locale.LC_TIME, environ['LOCALE'])
     except KeyError:  # no locale set
         pass
+
+    prev_year, prev_month = get_prev_year_month()
+
     parser = argparse.ArgumentParser(description='Create a timesheet with ' +
                                      'gaussian distributed times for work.')
     parser.add_argument('--start', nargs=1, metavar='t_s', default=[8],
@@ -136,10 +148,10 @@ def main():
     parser.add_argument('--variance', nargs=1, metavar='var', default=[.25],
                         type=float, help='The variance of each start ' +
                         'time. Default: 15 min (=.25).')
-    parser.add_argument('--year', metavar='year', default=get_year(), type=int,
+    parser.add_argument('--year', metavar='year', default=prev_year, type=int,
                         help='The year for which the timesheet'
                         ' should be printed. Default: Current year')
-    parser.add_argument('--month', metavar='month', default=get_month(),
+    parser.add_argument('--month', metavar='month', default=prev_month,
                         type=int,
                         help='The month for which the timesheet'
                         ' should be printed. Default: Current month')
