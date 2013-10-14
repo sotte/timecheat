@@ -41,14 +41,6 @@ def round_to_quarter(time):
     return time
 
 
-def get_year():
-    return date.today().year
-
-
-def get_month():
-    return date.today().month
-
-
 def get_prev_year_month():
     today = date.today()
     # first day of the current month
