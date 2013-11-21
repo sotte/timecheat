@@ -2,11 +2,18 @@ from datetime import timedelta
 import calendar
 import re
 
+def switch_author(line, name):
+  if line[1:7] == 'author':
+    return '\\author{' + name + '}'
+  return line
 
 class LatexPrinter:
-    def __init__(self, template=None):
+    def __init__(self, template=None, name=None):
         if template:
             self.template = file(template).readlines()
+            if name:
+              self.template = [switch_author(line, name) 
+                               for line in self.template]
         else:
             self.template = None
 
