@@ -10,6 +10,15 @@ import locale
 from os import environ
 
 
+week_workday_map = {
+  'Monday' : calendar.MONDAY,
+  'Tuesday' : calendar.TUESDAY,
+  'Wednesday' : calendar.WEDNESDAY,
+  'Thursday' : calendar.THURSDAY,
+  'Friday' : calendar.FRIDAY
+}
+
+
 def create_times(day, start, pausestart, worktime, pausetime, variance):
     mins_hours = modf(start)
     start = round_to_quarter(datetime.combine(day, time(int(mins_hours[1]),int(60*mins_hours[0]))) +
@@ -72,13 +81,28 @@ def get_unholidays(filenames):
     return unholidays
 
 
-def get_work_days(year, month, holiday_files, unholiday_files):
+def is_valid_week_workdays(week_workdays, possible_days):
+  for day in week_workdays:
+      if day not in possible_days: return False
+  return True
+
+
+def get_workdays_of_week(week_workdays):
+  possible_days = week_workday_map.keys()
+  if not week_workdays:
+      week_workdays = possible_days
+  if not is_valid_week_workdays(week_workdays, possible_days): return None
+
+  return [week_workday_map[day] for day in week_workdays]
+
+
+def get_work_days(year, month, holiday_files, unholiday_files, week_workdays):
     cal = calendar.Calendar()
     workdays = []
     holidays = get_holidays(holiday_files)
     unholidays = get_unholidays(unholiday_files)
     for day in cal.itermonthdates(year, month):
-        if (((day.weekday() not in [calendar.SATURDAY, calendar.SUNDAY] and
+        if (((day.weekday() in week_workdays and
                 day not in holidays) or
                 (day in unholidays)) and
                 day.month == month):
@@ -125,6 +149,10 @@ def main():
 
     parser = argparse.ArgumentParser(description='Create a timesheet with ' +
                                      'gaussian distributed times for work.')
+    parser.add_argument('--name', nargs='*', metavar='string',
+                        type=str, help='Your name. Defaults to \'Max Mustermann\'.' +
+                        'You can list as many names as you want (first middle last etc)'
+                        'delimited by spaces.')
     parser.add_argument('--start', nargs=1, metavar='t_s', default=[8],
                         type=float, help='The time when work normally' +
                         ' starts. Default: 08:00 (=8).')
@@ -162,22 +190,51 @@ def main():
                         type=str, help='A file ' +
                         'working dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
+    parser.add_argument('--weekworkdays', nargs='*', metavar='string',
+                        type=str, help='A list of workdays in the week. ' +
+                        'Defaults to \'Monday Tuesday Wednesday Thursday Friday\',' 
+                        'any subset of those days can be specified. The list ' +
+                        'should be space delimited.') 
+
     args = parser.parse_args()
 
-    workdays = get_work_days(args.year, args.month, args.holidays,
-                            args.unholidays)
+    # Parse the week workdays (e.g. Monday, Tuesday, etc.).
+    week_workdays = get_workdays_of_week(args.weekworkdays)
+    if not week_workdays:
+      print 'ERROR -- invalid week workdays:', args.weekworkdays
+      exit(1)
 
+    # Get the collection work days in this month based on the days of the week
+    # you work.
+    workdays = get_work_days(args.year, args.month, args.holidays,
+                            args.unholidays, week_workdays)
+
+    # If a name was specified in the args, then parse it out.
+    if args.name: name = ' '.join(args.name)
+    else: name = None
+
+    # Figure out which printer to use.
     if args.output[0] == 'text':
         printer = TextPrinter()
     elif args.output[0] == 'template':
-        printer = LatexPrinter(args.template[0])
+        printer = LatexPrinter(args.template[0], name=name)
     elif args.output[0] == 'latex':
-        printer = LatexPrinter()
+        printer = LatexPrinter(name=name)
     else:
         parser.print_help()
         return
     print_sheet(printer, workdays, args)
 
 
+# Example commandline (copy into a bash script):
+#
+# F=timesheet_november
+# MONTH=11
+#
+# python timecheat.py \
+#   --name Justin Timberlake \
+#   --weekworkdays Tuesday Thursday \
+#   --start 10 --worktime 10 --year 2013 \
+#   --month $MONTH > $F.tex
 if __name__ == "__main__":
     main()
