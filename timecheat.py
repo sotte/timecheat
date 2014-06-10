@@ -162,7 +162,7 @@ def main():
     parser.add_argument('--month', metavar='month', default=prev_month,
                         type=int,
                         help='The month for which the timesheet'
-                        ' should be printed. Default: Current month')
+                        ' should be printed. Default: previous month')
     parser.add_argument('--output', nargs=1, metavar='format',
                         default=['template'], type=str, help='The output format.' +
                         ' May be \'text\', \'template\'  or \'latex\'. ' +
