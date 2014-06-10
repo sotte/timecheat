@@ -6,7 +6,6 @@ from random import gauss
 from math import sqrt, modf
 from datetime import date, datetime, time, timedelta
 import calendar
-from string import strip
 from printer import TextPrinter, LatexPrinter
 import locale
 from os import environ
@@ -61,26 +60,11 @@ def get_prev_year_month():
     return previous.year,  previous.month
 
 
-def get_holidays(filenames):
-    holidays = []
-    if filenames:
-        for f in filenames:
-            holiday_file = file(f)
-            for h in holiday_file.readlines():
-                h = strip(h, '\n')
-                holidays.append(datetime.strptime(h, '%d.%m.%Y').date())
-    return holidays
-
-
-def get_unholidays(filenames):
-    unholidays = []
-    if filenames:
-        for f in filenames:
-            unholiday_file = file(f)
-            for h in unholiday_file.readlines():
-                h = strip(h, '\n')
-                unholidays.append(datetime.strptime(h, '%d.%m.%Y').date())
-    return unholidays
+def get_days_from_file(filenames):
+    days = [datetime.strptime(line.strip(), '%d.%m.%Y').date()
+            for f in filenames
+            for line in open(f) if line.strip()]
+    return days
 
 
 def is_valid_week_workdays(week_workdays, possible_days):
@@ -103,8 +87,8 @@ def get_workdays_of_week(week_workdays):
 def get_work_days(year, month, holiday_files, unholiday_files, week_workdays):
     cal = calendar.Calendar()
     workdays = []
-    holidays = get_holidays(holiday_files)
-    unholidays = get_unholidays(unholiday_files)
+    holidays = get_days_from_file(holiday_files)
+    unholidays = get_days_from_file(unholiday_files)
     for day in cal.itermonthdates(year, month):
         if (((day.weekday() in week_workdays and
                 day not in holidays) or
