@@ -181,22 +181,22 @@ def main():
                         ' german order, e.g.: 24.03.2013')
     parser.add_argument('--weekworkdays', nargs='*', metavar='string',
                         type=str, help='A list of workdays in the week. ' +
-                        'Defaults to \'Monday Tuesday Wednesday Thursday Friday\',' 
+                        'Defaults to \'Monday Tuesday Wednesday Thursday Friday\','
                         'any subset of those days can be specified. The list ' +
-                        'should be space delimited.') 
+                        'should be space delimited.')
 
     args = parser.parse_args()
 
     # Parse the week workdays (e.g. Monday, Tuesday, etc.).
     week_workdays = get_workdays_of_week(args.weekworkdays)
     if not week_workdays:
-      print 'ERROR -- invalid week workdays:', args.weekworkdays
-      exit(1)
+        print 'ERROR -- invalid week workdays:', args.weekworkdays
+        exit(1)
 
     # Get the collection work days in this month based on the days of the week
     # you work.
     workdays = get_work_days(args.year, args.month, args.holidays,
-                            args.unholidays, week_workdays)
+                             args.unholidays, week_workdays)
 
     # If a name was specified in the args, then parse it out.
     if args.name: name = ' '.join(args.name)
