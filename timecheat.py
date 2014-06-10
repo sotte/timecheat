@@ -122,7 +122,7 @@ def print_sheet(printer, workdays, args):
         printer.print_divider()
         printer.print_week(week, day_num_week, args.worktime[0])
         printer.print_divider()
-    printer.print_month(calendar.month_name[args.month], day_num_month, 
+    printer.print_month(calendar.month_name[args.month], day_num_month,
                         args.worktime[0])
     printer.print_footer()
 
@@ -214,15 +214,5 @@ def main():
     print_sheet(printer, workdays, args)
 
 
-# Example commandline (copy into a bash script):
-#
-# F=timesheet_november
-# MONTH=11
-#
-# python timecheat.py \
-#   --name Justin Timberlake \
-#   --weekworkdays Tuesday Thursday \
-#   --start 10 --worktime 10 --year 2013 \
-#   --month $MONTH > $F.tex
 if __name__ == "__main__":
     main()
