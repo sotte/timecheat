@@ -13,11 +13,11 @@ from os import environ
 
 
 week_workday_map = {
-  'Monday' : calendar.MONDAY,
-  'Tuesday' : calendar.TUESDAY,
-  'Wednesday' : calendar.WEDNESDAY,
-  'Thursday' : calendar.THURSDAY,
-  'Friday' : calendar.FRIDAY
+    'Monday': calendar.MONDAY,
+    'Tuesday': calendar.TUESDAY,
+    'Wednesday': calendar.WEDNESDAY,
+    'Thursday': calendar.THURSDAY,
+    'Friday': calendar.FRIDAY
 }
 
 
@@ -84,18 +84,20 @@ def get_unholidays(filenames):
 
 
 def is_valid_week_workdays(week_workdays, possible_days):
-  for day in week_workdays:
-      if day not in possible_days: return False
-  return True
+    for day in week_workdays:
+        if day not in possible_days:
+            return False
+    return True
 
 
 def get_workdays_of_week(week_workdays):
-  possible_days = week_workday_map.keys()
-  if not week_workdays:
-      week_workdays = possible_days
-  if not is_valid_week_workdays(week_workdays, possible_days): return None
+    possible_days = week_workday_map.keys()
+    if not week_workdays:
+        week_workdays = possible_days
+    if not is_valid_week_workdays(week_workdays, possible_days):
+        return None
 
-  return [week_workday_map[day] for day in week_workdays]
+    return [week_workday_map[day] for day in week_workdays]
 
 
 def get_work_days(year, month, holiday_files, unholiday_files, week_workdays):
