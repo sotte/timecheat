@@ -199,8 +199,7 @@ def main():
                              args.unholidays, week_workdays)
 
     # If a name was specified in the args, then parse it out.
-    if args.name: name = ' '.join(args.name)
-    else: name = None
+    name = ' '.join(args.name) if args.name else None
 
     # Figure out which printer to use.
     if args.output[0] == 'text':
