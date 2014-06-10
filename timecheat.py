@@ -175,7 +175,8 @@ def main():
                         'holiday dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
     parser.add_argument('--unholidays', nargs='*', metavar='file',
-                        type=str, help='A file ' +
+                        default=[], type=str,
+                        help='A file ' +
                         'working dates. Format is each day in a line in ' +
                         ' german order, e.g.: 24.03.2013')
     parser.add_argument('--weekworkdays', nargs='*', metavar='string',
