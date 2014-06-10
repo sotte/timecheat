@@ -1,4 +1,6 @@
-#!/usr/bin/python2
+#!/usr/bin/env python
+# encoding: utf-8
+
 import argparse
 from random import gauss
 from math import sqrt, modf
